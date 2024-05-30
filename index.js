@@ -2,7 +2,7 @@ const redux = require('redux')
 
 const createStore = redux.createStore;
 const CAKE_ORDER = "CAKE_ORDER"  //here we difine the action constant string
-
+const CAKE_RESTOCKED = "CAKE_RESTOCKED" //here we are restocking the cake
 // {
 //     type:CAKE_ORDER,
 //     quantity:1,     --this i the simple action object
@@ -15,6 +15,13 @@ function orderCake() {
     return {
         type: CAKE_ORDER,
         quantity: 1
+    }
+}
+
+function reStock(qty = 1) {
+    return {
+        type: CAKE_RESTOCKED,
+        payload: qty
     }
 }
 
@@ -32,6 +39,11 @@ const reducer = (state = initialStatec, action) => {
                 ...state,
                 numberOfCakes: state.numberOfCakes - 1
             }
+        case CAKE_RESTOCKED:
+            return {
+                ...state,
+                numberOfCakes: state.numberOfCakes + action.payload
+            }
         default:
             return state
     }
@@ -40,11 +52,12 @@ const reducer = (state = initialStatec, action) => {
 
 //ceating store
 const store = createStore(reducer);   //here redux store holing the application state bcz reducer we passed it have the intial state.
-console.log('initial state',store.getState());
-const unsubscribe = store.subscribe(() => console.log('update state',store.getState()))
+console.log('initial state', store.getState());
+const unsubscribe = store.subscribe(() => console.log('update state', store.getState()))
 
 store.dispatch(orderCake())
 store.dispatch(orderCake())
 store.dispatch(orderCake())
+store.dispatch(reStock(3))
 
 unsubscribe()
